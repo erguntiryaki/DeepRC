@@ -147,14 +147,14 @@ class DatasetToHDF5(object):
             
             # Get sequence counts
             if self.sequence_counts_column is None:
-                counts_per_sequence = np.ones_like(repertoire_data[self.sequence_column].values, dtype=np.int)
+                counts_per_sequence = np.ones_like(repertoire_data[self.sequence_column].values, dtype=np.int32)
             else:
                 try:
-                    counts_per_sequence = np.asarray(repertoire_data[self.sequence_counts_column].values, dtype=np.int)
+                    counts_per_sequence = np.asarray(repertoire_data[self.sequence_counts_column].values, dtype=np.int32)
                 except ValueError:
                     counts_per_sequence = repertoire_data[self.sequence_counts_column].values
                     counts_per_sequence[counts_per_sequence == 'null'] = 0
-                    counts_per_sequence = np.asarray(counts_per_sequence, dtype=np.int)
+                    counts_per_sequence = np.asarray(counts_per_sequence, dtype=np.int32)
                 
                 # Set sequence counts < 1 to 1
                 if counts_per_sequence.min() < 1:
@@ -162,7 +162,7 @@ class DatasetToHDF5(object):
                     sys.stdout.flush()
                     counts_per_sequence[counts_per_sequence < 0] = 1
             
-            seq_lens = np.array([len(sequence) for sequence in repertoire_data[self.sequence_column]], dtype=np.int)
+            seq_lens = np.array([len(sequence) for sequence in repertoire_data[self.sequence_column]], dtype=np.int32)
             n_sequences = len(repertoire_data)
             
             # Calculate sequence length stats
@@ -230,11 +230,11 @@ class DatasetToHDF5(object):
              n_sequences_per_sample) = zip(*samples_infos)
             counts_per_sequence = np.concatenate(counts_per_sequence, axis=0)
             seq_lens = np.concatenate(seq_lens, axis=0)
-            sample_min_seq_len = np.asarray(min_seq_len, dtype=np.int)
-            sample_max_seq_len = np.asarray(max_seq_len, dtype=np.int)
-            sample_avg_seq_len = np.asarray(avg_seq_len, dtype=np.float)
-            n_sequences_per_sample = np.asarray(n_sequences_per_sample, dtype=np.int)
-            sample_sequences_start_end = np.empty(shape=(*n_sequences_per_sample.shape, 2), dtype=np.int)
+            sample_min_seq_len = np.asarray(min_seq_len, dtype=np.int32)
+            sample_max_seq_len = np.asarray(max_seq_len, dtype=np.int32)
+            sample_avg_seq_len = np.asarray(avg_seq_len, dtype=np.float32)
+            n_sequences_per_sample = np.asarray(n_sequences_per_sample, dtype=np.int32)
+            sample_sequences_start_end = np.empty(shape=(*n_sequences_per_sample.shape, 2), dtype=np.int32)
             sample_sequences_start_end[:, 1] = np.cumsum(n_sequences_per_sample)
             sample_sequences_start_end[1:, 0] = sample_sequences_start_end[:-1, 1]
             sample_sequences_start_end[0, 0] = 0

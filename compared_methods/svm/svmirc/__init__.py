@@ -740,7 +740,7 @@ class SVMBaseline(object):
 
         # Draw hyperparameter values of the trial.
         np.random.seed(seed)
-        penalties = list(np.linspace(start=min(penalty), stop=max(penalty), num=trials, dtype=np.float))
+        penalties = list(np.linspace(start=min(penalty), stop=max(penalty), num=trials, dtype=np.float32))
 
         # Perform grid search to optimise hyperparameters.
         for trial in range(trials):
